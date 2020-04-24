@@ -146,11 +146,12 @@ def get_sources(slug):
 @jwt_required
 @use_kwargs(source_schema)
 @marshal_with(source_schema)
-def make_source_on_article(slug, body, **kwargs):
+def make_source_on_article(slug, **kwargs):
     article = Article.query.filter_by(slug=slug).first()
     if not article:
         raise InvalidUsage.article_not_found()
     source = Source(article=article, **kwargs)
+    source.load_preview()
     source.save()
     return source
 
